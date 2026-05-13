@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+*.tsbuildinfo
+
+# Environment (secrets never committed)
+.env
+.env.local
+.env.*.local
+
+# Supabase CLI (estado local de `supabase link`)
+.supabase/
+
+# PKI material (private keys and issued certificates)
+/certs/
+!/packages/pki/README.md
+
+# Logs & OS
+.DS_Store
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Test / coverage
+coverage/

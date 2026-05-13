@@ -1,0 +1,21 @@
+{
+  "loading": "Cargando…",
+  "errorLoad": "No se pudieron cargar los datos. Verificá la conexión y el estado del servidor.",
+  "save": "Guardar",
+  "loadMore": "Cargar más",
+  "language": "Idioma",
+  "dashboardIntro": "Monitoreo en tiempo real de cadena de frío para operaciones críticas.",
+  "nav": {
+    "appTitle": "WCreation — Operaciones",
+    "dashboard": "Panel",
+    "devices": "Dispositivos",
+    "events": "Eventos",
+    "groups": "Grupos / locales",
+    "users": "Usuarios",
+    "settings": "Configuración",
+    "profile": "Perfil",
+    "admin": "Administración",
+    "tenants": "Tenants",
+    "devicesGlobal": "Dispositivos globales"
+  }
+}

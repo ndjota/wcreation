@@ -1,0 +1,15 @@
+meta {
+  name: Public QR
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/public/qr/{{publicQrToken}}
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  publicQrToken: demo-public-token-wc
+}

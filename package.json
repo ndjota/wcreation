@@ -1,0 +1,42 @@
+{
+  "name": "wcreation",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "sh -c 'opts=\"\"; [ -f .env ] && opts=\"--env-file .env\"; exec docker compose -f infra/docker-compose.dev.yml --project-name wcreation $opts up'",
+    "dev:detach": "sh -c 'opts=\"\"; [ -f .env ] && opts=\"--env-file .env\"; exec docker compose -f infra/docker-compose.dev.yml --project-name wcreation $opts up -d'",
+    "dev:down": "sh -c 'opts=\"\"; [ -f .env ] && opts=\"--env-file .env\"; exec docker compose -f infra/docker-compose.dev.yml --project-name wcreation $opts down'",
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "vitest run",
+    "dev:api": "pnpm --filter @wcreation/api dev",
+    "dev:bridge": "pnpm --filter @wcreation/mqtt-bridge dev",
+    "dev:pwa": "pnpm --filter @wcreation/pwa dev",
+    "dev:telegram": "pnpm --filter @wcreation/telegram-bot dev"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "18.3.12",
+      "@types/react-dom": "18.3.1"
+    }
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "@eslint/js": "^9.15.0",
+    "@types/json-schema": "^7.0.15",
+    "@types/node": "^22.10.0",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "pg": "^8.13.1",
+    "prettier": "^3.4.1",
+    "typescript": "^5.6.3",
+    "tsx": "^4.19.2",
+    "typescript-eslint": "^8.15.0",
+    "vitest": "^2.1.6"
+  }
+}

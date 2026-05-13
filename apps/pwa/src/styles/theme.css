@@ -1,0 +1,11 @@
+/* Tema industrial — variables de apoyo */
+:root {
+  --wc-cta: #1e3a8a;
+  --wc-ok: #84cc16;
+  --wc-warn: #f59e0b;
+  --wc-crit: #dc2626;
+}
+
+.dark {
+  --wc-cta: #3b82f6;
+}

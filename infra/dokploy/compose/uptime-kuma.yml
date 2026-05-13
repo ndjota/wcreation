@@ -1,0 +1,28 @@
+# Uptime Kuma (opcional en el mismo VPS o en otro host)
+# Dominio sugerido: uptime.ndjota.io — monitorea PWA, API /health, TCP mqtt:8883 y Postgres.
+# Crear en Dokploy como Application o Compose; definir UPTIME_KUMA_PORT y volúmenes.
+
+name: uptime-kuma
+
+networks:
+  dokploy-network:
+    external: true
+
+volumes:
+  uptime_kuma_data:
+
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    restart: unless-stopped
+    volumes:
+      - uptime_kuma_data:/app/data
+    networks:
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      - traefik.http.routers.uptime-kuma.rule=Host(`uptime.ndjota.io`)
+      - traefik.http.routers.uptime-kuma.entrypoints=websecure
+      - traefik.http.routers.uptime-kuma.tls.certresolver=letsencrypt
+      - traefik.http.services.uptime-kuma.loadbalancer.server.port=3001

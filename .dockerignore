@@ -1,0 +1,17 @@
+node_modules
+**/node_modules
+**/dist
+.git
+.env
+.env.*
+!.env.example
+**/.turbo
+**/coverage
+**/*.log
+apps/pwa/dist
+.cursor
+**/agent-transcripts
+**/terminals
+certs/devices
+*.pem
+!**/README.md

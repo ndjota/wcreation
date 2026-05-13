@@ -1,0 +1,72 @@
+# TimescaleDB + Redis (VPS) — Dokploy Service → Docker Compose
+# Ajustado para un VPS con ~2 GB RAM dedicados a datos (ajustar si compartís con EMQX/API).
+# Red externa: Dokploy `dokploy-network` para que API/bridge alcancen `timescaledb` y `redis`.
+
+name: wcreation-data
+
+networks:
+  dokploy-network:
+    external: true
+
+volumes:
+  wcreation_pgdata:
+  wcreation_redisdata:
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    hostname: timescaledb
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${WCREATION_PG_USER:-postgres}
+      POSTGRES_PASSWORD: ${WCREATION_PG_PASSWORD:?definir WCREATION_PG_PASSWORD}
+      POSTGRES_DB: ${WCREATION_PG_DATABASE:-wcreation}
+    command:
+      - postgres
+      - -c
+      - max_connections=100
+      - -c
+      - shared_buffers=512MB
+      - -c
+      - effective_cache_size=1536MB
+      - -c
+      - work_mem=8MB
+      - -c
+      - maintenance_work_mem=128MB
+      - -c
+      - random_page_cost=1.1
+      - -c
+      - wal_compression=on
+    volumes:
+      - wcreation_pgdata:/var/lib/postgresql/data
+    networks:
+      - dokploy-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${WCREATION_PG_USER:-postgres} -d ${WCREATION_PG_DATABASE:-wcreation}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    hostname: redis
+    restart: unless-stopped
+    command:
+      [
+        "redis-server",
+        "--appendonly",
+        "yes",
+        "--maxmemory",
+        "256mb",
+        "--maxmemory-policy",
+        "allkeys-lru",
+      ]
+    volumes:
+      - wcreation_redisdata:/data
+    networks:
+      - dokploy-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10

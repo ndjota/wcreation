@@ -1,0 +1,23 @@
+meta {
+  name: Put thresholds
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{baseUrl}}/devices/{{deviceId}}/thresholds
+  body: json
+  auth: bearer
+}
+
+body:json {
+  {
+    "temp_interna_min": 2,
+    "temp_interna_max": 8,
+    "modificable_por_responsable": true
+  }
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

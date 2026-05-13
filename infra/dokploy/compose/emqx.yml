@@ -1,0 +1,52 @@
+# EMQX 5 en producción — Dokploy: Service → Docker Compose
+# Requisitos en el host: certificados en /etc/wcreation/certs/broker (server.crt, server.key, cacert.pem)
+# y ACL en /etc/wcreation/emqx/acl.conf (o montar desde repo infra/emqx/etc/acl.conf).
+#
+# Traefik (TCP passthrough :8883 → EMQX TLS; el broker termina mTLS con cert propio, no Let's Encrypt).
+# Dashboard: router HTTP a 18083 con basic auth en Traefik (mqtt-admin.wcreation.ndjota.io).
+
+name: wcreation-emqx
+
+networks:
+  dokploy-network:
+    external: true
+
+volumes:
+  emqx_data:
+
+services:
+  emqx:
+    image: emqx/emqx:5.8
+    hostname: emqx
+    restart: unless-stopped
+    user: root
+    environment:
+      EMQX_NODE__NAME: emqx@127.0.0.1
+      # Definir en Dokploy (nunca valores por defecto en producción)
+      EMQX_DASHBOARD__DEFAULT_USERNAME: ${EMQX_DASHBOARD_USERNAME:-admin}
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: ${EMQX_DASHBOARD_PASSWORD:?definir EMQX_DASHBOARD_PASSWORD}
+      EMQX_LOG__CONSOLE_HANDLER__LEVEL: warning
+    volumes:
+      - emqx_data:/opt/emqx/data
+      - /etc/wcreation/emqx/emqx.conf:/opt/emqx/etc/emqx.conf:ro
+      - /etc/wcreation/emqx/acl.conf:/opt/emqx/etc/acl.conf:ro
+      - /etc/wcreation/certs/broker:/opt/emqx/etc/certs:ro
+      - /etc/wcreation/certs/ca/ca.crt:/opt/emqx/etc/certs/ca-root.crt:ro
+    networks:
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      # MQTT TLS passthrough (entrypoint `mqtts` debe existir en Traefik :8883)
+      - traefik.tcp.routers.wcreation-mqtt.rule=HostSNI(`mqtt.wcreation.ndjota.io`)
+      - traefik.tcp.routers.wcreation-mqtt.entrypoints=mqtts
+      - traefik.tcp.routers.wcreation-mqtt.tls.passthrough=true
+      - traefik.tcp.routers.wcreation-mqtt.service=wcreation-mqtt-svc
+      - traefik.tcp.services.wcreation-mqtt-svc.loadbalancer.server.port=8883
+      # Dashboard EMQX (HTTP interno; TLS y auth en Traefik)
+      - traefik.http.routers.wcreation-emqx-dash.rule=Host(`mqtt-admin.wcreation.ndjota.io`)
+      - traefik.http.routers.wcreation-emqx-dash.entrypoints=websecure
+      - traefik.http.routers.wcreation-emqx-dash.tls.certresolver=letsencrypt
+      - traefik.http.middlewares.wcreation-emqx-dash-auth.basicauth.users=${TRAEFIK_EMQX_BASIC_AUTH:?definir TRAEFIK_EMQX_BASIC_AUTH htpasswd}
+      - traefik.http.routers.wcreation-emqx-dash.middlewares=wcreation-emqx-dash-auth@docker
+      - traefik.http.services.wcreation-emqx-dash.loadbalancer.server.port=18083

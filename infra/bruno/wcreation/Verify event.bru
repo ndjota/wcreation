@@ -1,0 +1,19 @@
+meta {
+  name: Verify event
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/devices/{{deviceId}}/events/{{eventId}}/verify
+  body: none
+  auth: bearer
+}
+
+vars:pre-request {
+  eventId: 
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

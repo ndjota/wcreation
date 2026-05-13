@@ -1,0 +1,21 @@
+{
+  "loading": "Loading…",
+  "errorLoad": "Could not load data. Check your connection and server status.",
+  "save": "Save",
+  "loadMore": "Load more",
+  "language": "Language",
+  "dashboardIntro": "Real-time cold chain monitoring for critical operations.",
+  "nav": {
+    "appTitle": "WCreation — Operations",
+    "dashboard": "Dashboard",
+    "devices": "Devices",
+    "events": "Events",
+    "groups": "Groups / sites",
+    "users": "Users",
+    "settings": "Settings",
+    "profile": "Profile",
+    "admin": "Administration",
+    "tenants": "Tenants",
+    "devicesGlobal": "Global devices"
+  }
+}
