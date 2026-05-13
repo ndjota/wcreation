@@ -17,7 +17,12 @@
     "dev:api": "pnpm --filter @wcreation/api dev",
     "dev:bridge": "pnpm --filter @wcreation/mqtt-bridge dev",
     "dev:pwa": "pnpm --filter @wcreation/pwa dev",
-    "dev:telegram": "pnpm --filter @wcreation/telegram-bot dev"
+    "dev:telegram": "pnpm --filter @wcreation/telegram-bot dev",
+    "dev:all": "bash scripts/dev-local.sh",
+    "emulator": "bash scripts/run-emulator-lab.sh",
+    "emulator:menu": "bash scripts/run-emulator-lab.sh menu",
+    "emulator:run": "bash scripts/run-emulator-lab.sh run",
+    "supabase:option-b": "bash scripts/option-b-setup.sh"
   },
   "pnpm": {
     "overrides": {

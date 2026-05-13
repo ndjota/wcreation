@@ -28,8 +28,8 @@ Sistema profesional de **control y certificación de cadena de frío** para farm
    - **anon public** → `SUPABASE_ANON_KEY`
    - **service_role** → `SUPABASE_SERVICE_ROLE_KEY` (solo backend y scripts, nunca en el PWA).
 6. En **Settings → General → Reference ID** copiá el identificador del proyecto → `SUPABASE_PROJECT_REF` (para la CLI).
-7. Instalá la [Supabase CLI](https://supabase.com/docs/guides/cli) y ejecutá `bash scripts/supabase-apply-migrations.sh` (vincula con `SUPABASE_PROJECT_REF` si hace falta y hace `db push`).
-8. Cargá datos demo: `bash scripts/supabase-seed.sh` (emails y contraseña vía variables del `.env`).
+7. Instalá la [Supabase CLI](https://supabase.com/docs/guides/cli) y ejecutá `bash scripts/supabase-apply-migrations.sh` (vincula con `SUPABASE_PROJECT_REF` si hace falta y hace `db push`). Requiere `supabase login` o `SUPABASE_ACCESS_TOKEN`.
+8. Cargá datos demo: `bash scripts/supabase-seed.sh` (emails y contraseña vía variables del `.env`). **Si aparece `PGRST106` / schema `wcreation` inválido:** en el dashboard del proyecto → **Settings → Data API** agregá **`wcreation`** a **Exposed schemas** ([doc](https://supabase.com/docs/guides/api/using-custom-schemas)) y volvé a ejecutar el seed. Flujo guiado: `pnpm supabase:option-b` (equiv. `bash scripts/option-b-setup.sh`).
 
 **Nota de seguridad:** la validación de JWT en el API usa **JWKS remoto** (`jose`), no una clave pública estática, para soportar la rotación de claves de Supabase.
 

@@ -12,7 +12,12 @@ import "./styles/theme.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { retry: 1, refetchOnWindowFocus: true },
+    queries: {
+      retry: 1,
+      /** Menos trabajo al volver a la pestaña; el panel ya no se “congela” refrescando todo a la vez. */
+      refetchOnWindowFocus: false,
+      staleTime: 15_000,
+    },
   },
 });
 

@@ -13,12 +13,12 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthedRouteRouteImport } from './routes/_authed/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as QrTokenRouteImport } from './routes/qr/$token'
-import { Route as ReportsVerifyReportIdRouteImport } from './routes/reports/verify.$reportId'
 import { Route as AuthedUsersRouteImport } from './routes/_authed/users'
 import { Route as AuthedGroupsRouteImport } from './routes/_authed/groups'
 import { Route as AuthedEventsRouteImport } from './routes/_authed/events'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedDevicesIndexRouteImport } from './routes/_authed/devices/index'
+import { Route as ReportsVerifyReportIdRouteImport } from './routes/reports/verify.$reportId'
 import { Route as AuthedSettingsTenantRouteImport } from './routes/_authed/settings/tenant'
 import { Route as AuthedSettingsProfileRouteImport } from './routes/_authed/settings/profile'
 import { Route as AuthedSettingsNotificationsRouteImport } from './routes/_authed/settings/notifications'
@@ -46,11 +46,6 @@ const QrTokenRoute = QrTokenRouteImport.update({
   path: '/qr/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReportsVerifyReportIdRoute = ReportsVerifyReportIdRouteImport.update({
-  id: '/reports/verify/$reportId',
-  path: '/reports/verify/$reportId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthedUsersRoute = AuthedUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -75,6 +70,11 @@ const AuthedDevicesIndexRoute = AuthedDevicesIndexRouteImport.update({
   id: '/devices/',
   path: '/devices/',
   getParentRoute: () => AuthedRouteRoute,
+} as any)
+const ReportsVerifyReportIdRoute = ReportsVerifyReportIdRouteImport.update({
+  id: '/reports/verify/$reportId',
+  path: '/reports/verify/$reportId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthedSettingsTenantRoute = AuthedSettingsTenantRouteImport.update({
   id: '/settings/tenant',
@@ -123,13 +123,13 @@ export interface FileRoutesByFullPath {
   '/groups': typeof AuthedGroupsRoute
   '/users': typeof AuthedUsersRoute
   '/qr/$token': typeof QrTokenRoute
-  '/reports/verify/$reportId': typeof ReportsVerifyReportIdRoute
   '/admin/devices-global': typeof AuthedAdminDevicesGlobalRoute
   '/admin/tenants': typeof AuthedAdminTenantsRoute
   '/devices/$deviceId': typeof AuthedDevicesDeviceIdRoute
   '/settings/notifications': typeof AuthedSettingsNotificationsRoute
   '/settings/profile': typeof AuthedSettingsProfileRoute
   '/settings/tenant': typeof AuthedSettingsTenantRoute
+  '/reports/verify/$reportId': typeof ReportsVerifyReportIdRoute
   '/devices/': typeof AuthedDevicesIndexRoute
   '/settings/thresholds/$deviceId': typeof AuthedSettingsThresholdsDeviceIdRoute
 }
@@ -141,13 +141,13 @@ export interface FileRoutesByTo {
   '/groups': typeof AuthedGroupsRoute
   '/users': typeof AuthedUsersRoute
   '/qr/$token': typeof QrTokenRoute
-  '/reports/verify/$reportId': typeof ReportsVerifyReportIdRoute
   '/admin/devices-global': typeof AuthedAdminDevicesGlobalRoute
   '/admin/tenants': typeof AuthedAdminTenantsRoute
   '/devices/$deviceId': typeof AuthedDevicesDeviceIdRoute
   '/settings/notifications': typeof AuthedSettingsNotificationsRoute
   '/settings/profile': typeof AuthedSettingsProfileRoute
   '/settings/tenant': typeof AuthedSettingsTenantRoute
+  '/reports/verify/$reportId': typeof ReportsVerifyReportIdRoute
   '/devices': typeof AuthedDevicesIndexRoute
   '/settings/thresholds/$deviceId': typeof AuthedSettingsThresholdsDeviceIdRoute
 }
@@ -161,13 +161,13 @@ export interface FileRoutesById {
   '/_authed/groups': typeof AuthedGroupsRoute
   '/_authed/users': typeof AuthedUsersRoute
   '/qr/$token': typeof QrTokenRoute
-  '/reports/verify/$reportId': typeof ReportsVerifyReportIdRoute
   '/_authed/admin/devices-global': typeof AuthedAdminDevicesGlobalRoute
   '/_authed/admin/tenants': typeof AuthedAdminTenantsRoute
   '/_authed/devices/$deviceId': typeof AuthedDevicesDeviceIdRoute
   '/_authed/settings/notifications': typeof AuthedSettingsNotificationsRoute
   '/_authed/settings/profile': typeof AuthedSettingsProfileRoute
   '/_authed/settings/tenant': typeof AuthedSettingsTenantRoute
+  '/reports/verify/$reportId': typeof ReportsVerifyReportIdRoute
   '/_authed/devices/': typeof AuthedDevicesIndexRoute
   '/_authed/settings/thresholds/$deviceId': typeof AuthedSettingsThresholdsDeviceIdRoute
 }
@@ -181,13 +181,13 @@ export interface FileRouteTypes {
     | '/groups'
     | '/users'
     | '/qr/$token'
-    | '/reports/verify/$reportId'
     | '/admin/devices-global'
     | '/admin/tenants'
     | '/devices/$deviceId'
     | '/settings/notifications'
     | '/settings/profile'
     | '/settings/tenant'
+    | '/reports/verify/$reportId'
     | '/devices/'
     | '/settings/thresholds/$deviceId'
   fileRoutesByTo: FileRoutesByTo
@@ -199,13 +199,13 @@ export interface FileRouteTypes {
     | '/groups'
     | '/users'
     | '/qr/$token'
-    | '/reports/verify/$reportId'
     | '/admin/devices-global'
     | '/admin/tenants'
     | '/devices/$deviceId'
     | '/settings/notifications'
     | '/settings/profile'
     | '/settings/tenant'
+    | '/reports/verify/$reportId'
     | '/devices'
     | '/settings/thresholds/$deviceId'
   id:
@@ -218,13 +218,13 @@ export interface FileRouteTypes {
     | '/_authed/groups'
     | '/_authed/users'
     | '/qr/$token'
-    | '/reports/verify/$reportId'
     | '/_authed/admin/devices-global'
     | '/_authed/admin/tenants'
     | '/_authed/devices/$deviceId'
     | '/_authed/settings/notifications'
     | '/_authed/settings/profile'
     | '/_authed/settings/tenant'
+    | '/reports/verify/$reportId'
     | '/_authed/devices/'
     | '/_authed/settings/thresholds/$deviceId'
   fileRoutesById: FileRoutesById
@@ -267,13 +267,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QrTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/reports/verify/$reportId': {
-      id: '/reports/verify/$reportId'
-      path: '/reports/verify/$reportId'
-      fullPath: '/reports/verify/$reportId'
-      preLoaderRoute: typeof ReportsVerifyReportIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authed/users': {
       id: '/_authed/users'
       path: '/users'
@@ -308,6 +301,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/devices/'
       preLoaderRoute: typeof AuthedDevicesIndexRouteImport
       parentRoute: typeof AuthedRouteRoute
+    }
+    '/reports/verify/$reportId': {
+      id: '/reports/verify/$reportId'
+      path: '/reports/verify/$reportId'
+      fullPath: '/reports/verify/$reportId'
+      preLoaderRoute: typeof ReportsVerifyReportIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authed/settings/tenant': {
       id: '/_authed/settings/tenant'

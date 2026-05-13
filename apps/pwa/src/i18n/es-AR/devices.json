@@ -42,5 +42,17 @@
   "chainOk": "Cadena íntegra",
   "chainBad": "Cadena rota",
   "selectEvent": "Seleccioná un evento reciente para verificar.",
-  "readOnlyThresholds": "No tenés permiso para editar umbrales en este dispositivo."
+  "readOnlyThresholds": "No tenés permiso para editar umbrales en este dispositivo.",
+  "addDeviceTitle": "Registrar dispositivo",
+  "addDeviceSerial": "Número de serie",
+  "addDeviceNombre": "Nombre visible",
+  "addDeviceNombrePh": "Ej. Heladera mostrador",
+  "addDeviceGroup": "Grupo / sucursal (opcional)",
+  "addDeviceGroupNone": "Sin grupo",
+  "addDeviceTenant": "Cliente (tenant)",
+  "addDeviceSubmit": "Guardar y abrir detalle",
+  "addDeviceSuccess": "Dispositivo creado.",
+  "addDeviceSerialTaken": "Ese número de serie ya está en uso.",
+  "addDeviceHintCerts": "El número de serie debe coincidir con el CN del certificado del equipo y con el tópico MQTT (wcreation/<tenant>/<serial>/telemetry). Generá certificados con scripts del repo, por ejemplo: bash scripts/pki-new-device.sh TU-SERIAL",
+  "addDeviceHintResponsable": "Los usuarios con rol responsable solo ven dispositivos si les asignás acceso (tabla de permisos); el dueño ve todos los del tenant."
 }

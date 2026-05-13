@@ -8,6 +8,8 @@
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "simulate-device": "tsx scripts/simulate-device.ts",
+    "lab-emulator": "tsx scripts/lab-emulator.ts",
+    "lab-menu": "tsx scripts/lab-menu.ts",
     "lint": "eslint src --max-warnings 0",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },

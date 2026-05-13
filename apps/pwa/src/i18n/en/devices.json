@@ -42,5 +42,17 @@
   "chainOk": "Chain intact",
   "chainBad": "Chain broken",
   "selectEvent": "Select a recent event to verify.",
-  "readOnlyThresholds": "You do not have permission to edit thresholds on this device."
+  "readOnlyThresholds": "You do not have permission to edit thresholds on this device.",
+  "addDeviceTitle": "Register device",
+  "addDeviceSerial": "Serial number",
+  "addDeviceNombre": "Display name",
+  "addDeviceNombrePh": "e.g. Front counter fridge",
+  "addDeviceGroup": "Group / branch (optional)",
+  "addDeviceGroupNone": "No group",
+  "addDeviceTenant": "Customer (tenant)",
+  "addDeviceSubmit": "Save and open detail",
+  "addDeviceSuccess": "Device created.",
+  "addDeviceSerialTaken": "That serial number is already in use.",
+  "addDeviceHintCerts": "The serial must match the device certificate CN and the MQTT topic (wcreation/<tenant>/<serial>/telemetry). Issue certs with repo scripts, e.g. bash scripts/pki-new-device.sh YOUR-SERIAL",
+  "addDeviceHintResponsable": "Branch managers only see devices you grant them access to; the owner sees every device in the tenant."
 }

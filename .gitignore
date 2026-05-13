@@ -12,6 +12,7 @@ dist/
 
 # Supabase CLI (estado local de `supabase link`)
 .supabase/
+supabase/.temp/
 
 # PKI material (private keys and issued certificates)
 /certs/
@@ -30,3 +31,6 @@ pnpm-debug.log*
 
 # Test / coverage
 coverage/
+
+# Estado local del menú emulador (ABM)
+scripts/emulator/lab-state.json

@@ -232,4 +232,49 @@ VALUES
   )
 ON CONFLICT (user_id, device_id) DO UPDATE SET permiso = EXCLUDED.permiso;
 
+INSERT INTO wcreation.device_thresholds (
+  device_id,
+  temp_interna_min,
+  temp_interna_max,
+  temp_ambiente_min,
+  temp_ambiente_max,
+  bateria_min_pct,
+  corte_red_max_seg,
+  puerta_abierta_max_seg,
+  modificable_por_responsable
+)
+VALUES
+  (
+    'a1111111-1111-1111-1111-111111111111'::uuid,
+    2,
+    8,
+    10,
+    35,
+    20,
+    300,
+    120,
+    true
+  ),
+  (
+    'a2222222-2222-2222-2222-222222222222'::uuid,
+    2,
+    8,
+    10,
+    35,
+    20,
+    300,
+    120,
+    true
+  )
+ON CONFLICT (device_id) DO UPDATE SET
+  temp_interna_min = EXCLUDED.temp_interna_min,
+  temp_interna_max = EXCLUDED.temp_interna_max,
+  temp_ambiente_min = EXCLUDED.temp_ambiente_min,
+  temp_ambiente_max = EXCLUDED.temp_ambiente_max,
+  bateria_min_pct = EXCLUDED.bateria_min_pct,
+  corte_red_max_seg = EXCLUDED.corte_red_max_seg,
+  puerta_abierta_max_seg = EXCLUDED.puerta_abierta_max_seg,
+  modificable_por_responsable = EXCLUDED.modificable_por_responsable,
+  updated_at = now();
+
 COMMIT;

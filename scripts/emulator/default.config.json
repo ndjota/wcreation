@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "tenant_id": "00000000-0000-0000-0000-0000000000aa",
+  "devices": [
+    {
+      "serial": "SN-DEV-001",
+      "device_id": "a1111111-1111-1111-1111-111111111111",
+      "enabled": true,
+      "telemetry_interval_ms": 5000,
+      "status_interval_ms": 30000,
+      "telemetry": {
+        "temp_interna": { "center": 4.0, "amplitude": 1.2, "min": 1.0, "max": 10.0 },
+        "temp_ambiente": { "center": 24.0, "amplitude": 2.0, "min": 18.0, "max": 32.0 },
+        "bateria_pct": { "center": 92, "amplitude": 0, "min": 55, "max": 100 },
+        "rssi_wifi": { "center": -64, "amplitude": 8, "min": -88, "max": -42 },
+        "fw": "1.0.3-emulator",
+        "door_open_every_ticks": 20,
+        "power_loss_every_ticks": 0
+      },
+      "random_seed": null
+    },
+    {
+      "serial": "SN-DEV-002",
+      "device_id": "a2222222-2222-2222-2222-222222222222",
+      "enabled": false,
+      "telemetry_interval_ms": 8000,
+      "status_interval_ms": 45000,
+      "telemetry": {
+        "temp_interna": { "center": 3.5, "amplitude": 0.8, "min": 1.0, "max": 9.0 },
+        "temp_ambiente": { "center": 23.0, "amplitude": 1.5, "min": 18.0, "max": 30.0 },
+        "bateria_pct": { "center": 78, "amplitude": 2, "min": 40, "max": 100 },
+        "rssi_wifi": { "center": -70, "amplitude": 6, "min": -90, "max": -45 },
+        "fw": "1.0.3-emulator",
+        "door_open_every_ticks": 28,
+        "power_loss_every_ticks": 36
+      },
+      "random_seed": 42
+    }
+  ],
+  "supabase_threshold_defaults": {
+    "temp_interna_min": 2,
+    "temp_interna_max": 8,
+    "temp_ambiente_min": 10,
+    "temp_ambiente_max": 35,
+    "bateria_min_pct": 20,
+    "corte_red_max_seg": 300,
+    "puerta_abierta_max_seg": 120,
+    "modificable_por_responsable": true
+  }
+}

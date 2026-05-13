@@ -91,6 +91,11 @@ function DashboardPage() {
       </div>
 
       {summary.isLoading ? <p className="text-sm text-slate-500">{t("loading")}</p> : null}
+      {summary.isError ? (
+        <p className="text-sm text-red-600 dark:text-red-400" role="alert">
+          {summary.error instanceof Error ? summary.error.message : String(summary.error)}
+        </p>
+      ) : null}
       {summary.isSuccess && kpis ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {role === "superadmin" && kpis.tenants_total != null ? (

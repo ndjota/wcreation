@@ -22,6 +22,13 @@ async function parseJson<T>(res: Response): Promise<T> {
   }
 }
 
+/** Evita “Cargando…” infinito si el API no está en :3001 o la red cuelga. Override: VITE_API_FETCH_TIMEOUT_MS */
+function apiFetchTimeoutMs(): number {
+  const raw = import.meta.env.VITE_API_FETCH_TIMEOUT_MS as string | undefined;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 3000 ? n : 15_000;
+}
+
 export async function apiFetch<T>(
   path: string,
   opts: {
@@ -41,12 +48,33 @@ export async function apiFetch<T>(
   if (opts.body !== undefined) {
     headers["Content-Type"] = "application/json";
   }
-  const res = await fetch(url, {
-    method: opts.method ?? "GET",
-    headers,
-    credentials: "omit",
-    ...(opts.body !== undefined ? { body: JSON.stringify(opts.body) } : {}),
-  });
+
+  const controller = new AbortController();
+  const tid = setTimeout(() => controller.abort(), apiFetchTimeoutMs());
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method: opts.method ?? "GET",
+      headers,
+      credentials: "omit",
+      signal: controller.signal,
+      ...(opts.body !== undefined ? { body: JSON.stringify(opts.body) } : {}),
+    });
+  } catch (e) {
+    const aborted =
+      (typeof DOMException !== "undefined" && e instanceof DOMException && e.name === "AbortError") ||
+      (e instanceof Error && e.name === "AbortError");
+    if (aborted) {
+      throw new ApiError(
+        "El servidor API no respondió a tiempo. ¿Está corriendo `pnpm dev:all` (API en el puerto 3001)?",
+        0,
+        { error: "timeout" },
+      );
+    }
+    throw e;
+  } finally {
+    clearTimeout(tid);
+  }
   if (res.status === 401) {
     window.dispatchEvent(new CustomEvent("wc:auth-expired"));
   }
@@ -102,6 +130,15 @@ export interface DeviceLastRedis {
   puerta_abierta?: boolean;
   rssi_wifi?: number;
   fw?: string;
+}
+
+export interface DeviceCreated {
+  id: string;
+  tenant_id: string;
+  group_id: string | null;
+  serial_number: string;
+  nombre: string;
+  estado: string;
 }
 
 export interface DeviceListItem {
@@ -194,6 +231,17 @@ export const api = {
     const s = q.toString();
     return apiFetch<{ items: DeviceListItem[] }>(`/devices${s ? `?${s}` : ""}`, { token });
   },
+
+  createDevice: (
+    token: string,
+    body: {
+      serial_number: string;
+      nombre: string;
+      group_id?: string | null;
+      tenant_id?: string;
+      estado?: "provisionado" | "activo";
+    },
+  ) => apiFetch<DeviceCreated>("/devices", { method: "POST", token, body }),
 
   device: (token: string, id: string) => apiFetch<DeviceDetail>(`/devices/${id}`, { token }),
 

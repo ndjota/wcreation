@@ -1,6 +1,10 @@
 import "dotenv/config";
 import { z } from "zod";
 
+/** En `.env`, las claves opcionales suelen quedar como `VAR=`; tratarlas como ausentes. */
+const emptyToUndefined = (v: unknown) =>
+  typeof v === "string" && v.trim() === "" ? undefined : v;
+
 const baseSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   API_HOST: z.string().default("0.0.0.0"),
@@ -9,7 +13,7 @@ const baseSchema = z.object({
 
   SUPABASE_URL: z.string().url(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
-  SUPABASE_JWKS_URL: z.string().url().optional(),
+  SUPABASE_JWKS_URL: z.preprocess(emptyToUndefined, z.string().url().optional()),
 
   VPS_DATABASE_URL: z
     .string()
@@ -19,11 +23,11 @@ const baseSchema = z.object({
   MQTT_BROKER_URL: z.string().default("mqtts://127.0.0.1:8883"),
 
   EVENT_SIGNING_KEY: z.string().min(32, "EVENT_SIGNING_KEY debe tener al menos 32 caracteres"),
-  REPORT_SIGNING_KEY: z.string().min(32).optional(),
+  REPORT_SIGNING_KEY: z.preprocess(emptyToUndefined, z.string().min(32).optional()),
 
   PUBLIC_APP_URL: z.string().url().default("https://wcreation.ndjota.io"),
   /** Base URL del API para enlaces de verificación (JSON). Si no se define, se usa PUBLIC_APP_URL. */
-  APP_LINK_API_URL: z.string().url().optional(),
+  APP_LINK_API_URL: z.preprocess(emptyToUndefined, z.string().url().optional()),
 
   /** Orígenes CORS permitidos (coma). En producción, si queda vacío se usa https://wcreation.ndjota.io */
   CORS_ORIGINS: z.string().optional(),

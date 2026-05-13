@@ -6,8 +6,11 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
+/** Monorepo: un solo `.env` en la raíz del repo (VITE_* compartidas con documentación). */
+const repoRoot = path.join(dirname, "..", "..");
 
 export default defineConfig({
+  envDir: repoRoot,
   plugins: [
     tanstackRouter({
       routesDirectory: path.join(dirname, "src", "routes"),

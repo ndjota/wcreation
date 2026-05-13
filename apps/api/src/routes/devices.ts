@@ -1,6 +1,8 @@
+import { randomUUID } from "node:crypto";
 import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
 import * as permissions from "../services/permissions.js";
+import { upsertSingleDeviceReplica } from "../services/sync.service.js";
 
 const listQuery = z.object({
   group_id: z.string().uuid().optional(),
@@ -10,6 +12,14 @@ const listQuery = z.object({
 
 const deviceParams = z.object({
   id: z.string().uuid(),
+});
+
+const createDeviceBody = z.object({
+  serial_number: z.string().trim().min(1).max(120),
+  nombre: z.string().trim().min(1).max(200),
+  group_id: z.string().uuid().nullable().optional(),
+  estado: z.enum(["provisionado", "activo"]).optional().default("provisionado"),
+  tenant_id: z.string().uuid().optional(),
 });
 
 const deviceRoutes: FastifyPluginAsync = async (fastify) => {
@@ -122,6 +132,107 @@ const deviceRoutes: FastifyPluginAsync = async (fastify) => {
       );
 
       return { items };
+    },
+  );
+
+  fastify.post(
+    "/devices",
+    {
+      schema: {
+        description: "Alta de dispositivo (dueño del tenant o superadmin). Umbrales por defecto + réplica VPS.",
+        tags: ["Dispositivos"],
+        security: [{ bearerAuth: [] }],
+      },
+    },
+    async (request, reply) => {
+      const user = request.authUser!;
+      const body = createDeviceBody.parse(request.body);
+
+      let tenantId: string;
+      if (permissions.isSuperadmin(user)) {
+        if (!body.tenant_id) {
+          return reply.status(400).send({ error: "missing_tenant_id", message: "Superadmin debe enviar tenant_id." });
+        }
+        tenantId = body.tenant_id;
+      } else if (user.roleCode === "owner_admin" && user.tenantId) {
+        tenantId = user.tenantId;
+      } else {
+        return reply.status(403).send({ error: "forbidden" });
+      }
+
+      const serial = body.serial_number.trim();
+      const nombre = body.nombre.trim();
+      const estado = body.estado;
+      const groupId = body.group_id ?? null;
+
+      if (groupId) {
+        const { data: g, error: ge } = await fastify.supabaseAdmin
+          .schema("wcreation")
+          .from("groups")
+          .select("id, tenant_id")
+          .eq("id", groupId)
+          .maybeSingle();
+        if (ge) throw ge;
+        if (!g || (g.tenant_id as string) !== tenantId) {
+          return reply.status(400).send({ error: "invalid_group", message: "El grupo no pertenece al tenant." });
+        }
+      }
+
+      const deviceId = randomUUID();
+
+      const { data: created, error: insErr } = await fastify.supabaseAdmin
+        .schema("wcreation")
+        .from("devices")
+        .insert({
+          id: deviceId,
+          tenant_id: tenantId,
+          group_id: groupId,
+          serial_number: serial,
+          nombre,
+          estado,
+        })
+        .select("id, tenant_id, group_id, serial_number, nombre, estado")
+        .single();
+
+      if (insErr) {
+        if (insErr.code === "23505") {
+          return reply.status(409).send({
+            error: "serial_taken",
+            message: "Ese número de serie ya está registrado en la plataforma.",
+          });
+        }
+        throw insErr;
+      }
+
+      const { error: thErr } = await fastify.supabaseAdmin.schema("wcreation").from("device_thresholds").insert({
+        device_id: deviceId,
+        temp_interna_min: 2,
+        temp_interna_max: 8,
+        temp_ambiente_min: null,
+        temp_ambiente_max: null,
+        bateria_min_pct: 15,
+        corte_red_max_seg: 300,
+        puerta_abierta_max_seg: 120,
+        modificable_por_responsable: true,
+      });
+
+      if (thErr) {
+        await fastify.supabaseAdmin.schema("wcreation").from("devices").delete().eq("id", deviceId);
+        throw thErr;
+      }
+
+      try {
+        await upsertSingleDeviceReplica(fastify, {
+          id: deviceId,
+          serial_number: serial,
+          tenant_id: tenantId,
+          estado,
+        });
+      } catch (e) {
+        fastify.log.warn({ err: String(e) }, "devices_replica upsert failed post-create");
+      }
+
+      return reply.status(201).send(created);
     },
   );
 
