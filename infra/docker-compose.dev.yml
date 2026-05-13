@@ -52,12 +52,11 @@ services:
     ports:
       - "1883:1883"
       - "8883:8883"
-      - "18083:18083"
+      - "${WCREATION_EMQX_DASHBOARD_PORT:-18083}:18083"
     volumes:
       - ./emqx/etc/emqx.conf:/opt/emqx/etc/emqx.conf:ro
       - ./emqx/etc/acl.conf:/opt/emqx/etc/acl.conf:ro
-      - ../certs/broker:/opt/emqx/etc/certs:ro
-      - ../certs/ca/ca.crt:/opt/emqx/etc/certs/ca-root.crt:ro
+      - ../certs:/mnt/wcreation-certs:ro
     networks:
       - wcreation-dev
 
