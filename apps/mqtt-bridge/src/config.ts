@@ -1,5 +1,21 @@
 import "dotenv/config";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { z } from "zod";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+/** Rutas `./certs/…` en `.env`: en `tsx` viven bajo `apps/mqtt-bridge/src` → resolver contra raíz del monorepo. En imagen Docker (`dist/`) usá rutas absolutas o relativas al `WORKDIR` del contenedor. */
+const monorepoRoot =
+  here.includes(`${path.sep}mqtt-bridge${path.sep}src`) || here.endsWith(`${path.sep}mqtt-bridge${path.sep}src`)
+    ? path.resolve(here, "..", "..", "..")
+    : null;
+
+function resolveCertPath(p: string): string {
+  const s = p.trim();
+  if (!s || path.isAbsolute(s)) return s;
+  if (monorepoRoot) return path.resolve(monorepoRoot, s);
+  return path.resolve(process.cwd(), s);
+}
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
@@ -25,5 +41,11 @@ export function loadBridgeConfig(): BridgeConfig {
     console.error(p.error.flatten().fieldErrors);
     throw new Error("Variables de entorno inválidas (mqtt-bridge)");
   }
-  return p.data;
+  const d = p.data;
+  return {
+    ...d,
+    MQTT_CA_PATH: resolveCertPath(d.MQTT_CA_PATH),
+    MQTT_CERT_PATH: resolveCertPath(d.MQTT_CERT_PATH),
+    MQTT_KEY_PATH: resolveCertPath(d.MQTT_KEY_PATH),
+  };
 }

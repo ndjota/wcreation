@@ -12,5 +12,6 @@
 | [incident-response.md](./incident-response.md) | Qué hacer si cae un componente |
 | [data-retention.md](./data-retention.md) | Retención de readings/eventos y compliance |
 | [faq.md](./faq.md) | Preguntas frecuentes |
+| [../infra/dokploy/VPS-DEPLOY.md](../infra/dokploy/VPS-DEPLOY.md) | Despliegue productivo en VPS (Dokploy, todos los servicios y variables) |
 
 La **especificación funcional** y el roadmap por etapas están en el README del repositorio raíz.

@@ -159,7 +159,7 @@ scripts/              # setup, seed, healthcheck, PKI, backup producción, fix-t
 
 Dominios públicos: **wcreation.ndjota.io** (PWA), **api.wcreation.ndjota.io** (API), **mqtt.wcreation.ndjota.io:8883** (MQTT TLS, passthrough TCP en Traefik), **mqtt-admin.wcreation.ndjota.io** (dashboard EMQX detrás de basic auth).
 
-1. **Infra**: [infra/dokploy/README.md](./infra/dokploy/README.md) (compose Timescale+Redis, EMQX, opcional Uptime Kuma).
+1. **Infra y checklist completo**: [infra/dokploy/VPS-DEPLOY.md](./infra/dokploy/VPS-DEPLOY.md) e [infra/dokploy/README.md](./infra/dokploy/README.md) (compose Timescale+Redis, EMQX, opcional Uptime Kuma).
 2. **Aplicaciones**: Dockerfiles en `apps/*/Dockerfile`; **build context = raíz del repo**; variables desde `.env.example` solo en Dokploy.
 3. **DNS**: registros A a la IP del VPS (Hostinger).
 4. **PKI**: cert de broker con SAN `mqtt.wcreation.ndjota.io` firmado por la CA de producto (no Let’s Encrypt en dispositivos); renovación típica cada **24 meses** — [docs/device-provisioning.md](./docs/device-provisioning.md).

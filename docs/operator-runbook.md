@@ -2,6 +2,8 @@
 
 Guía para operar WCreation en producción (VPS Ubuntu 24.04, Dokploy, Traefik v3).
 
+Checklist de despliegue inicial y dependencias entre servicios: **[infra/dokploy/VPS-DEPLOY.md](../infra/dokploy/VPS-DEPLOY.md)**.
+
 ## Contactos y secretos
 
 - **Dokploy**: variables de entorno por aplicación (nunca en el repo).

@@ -2,6 +2,8 @@
 
 Configuración de referencia para **Dokploy** sobre **Ubuntu 24.04** con **Traefik v3**. Repositorio: `ndjota/wcreation`, rama `main`, auto-deploy on push.
 
+**Guía de despliegue completo (orden, Supabase, VPS, variables y smoke tests):** [VPS-DEPLOY.md](./VPS-DEPLOY.md).
+
 ## DNS (Hostinger)
 
 Registros **A** → `168.231.117.14`:
