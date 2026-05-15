@@ -16,7 +16,7 @@ mkdir -p "${BRK_DIR}"
 
 openssl genrsa -out "${BRK_DIR}/server.key" 2048
 openssl req -new -key "${BRK_DIR}/server.key" \
-  -subj "/CN=mqtt.wcreation.ndjota.io/O=WCreation/OU=broker" \
+  -subj "/CN=emqx.wcreation.local/O=WCreation/OU=broker" \
   -out "${BRK_DIR}/server.csr"
 
 SRL="${BRK_DIR}/broker.srl"
@@ -36,7 +36,7 @@ openssl x509 -req -days 825 -sha256 \
       'extendedKeyUsage = serverAuth' \
       'subjectKeyIdentifier = hash' \
       'authorityKeyIdentifier = keyid:always,issuer' \
-      'subjectAltName = DNS:localhost, DNS:emqx, DNS:mqtt.wcreation.ndjota.io, IP:127.0.0.1'
+      'subjectAltName = DNS:localhost, DNS:emqx, IP:127.0.0.1'
   )
 
 cp "${CA_DIR}/ca-chain-verify-clients.pem" "${BRK_DIR}/cacert.pem"
